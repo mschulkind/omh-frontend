@@ -1,0 +1,37 @@
+.row
+  = form_tag users_path, 
+    method: 'post', 
+    role: 'form', 
+    id: 'new-user' do
+
+    h2 Register a New User
+
+    - if @errors.present?
+      .errors
+        ul
+          - @errors.each do |error|
+            li= error
+
+    .form-group
+      label for='username' Username
+      input#username.form-control{
+        type='text' 
+        name='username' 
+        value=params[:username]}
+
+    .form-group.password
+      label for='password' Password
+      input#password.form-control{
+        type='password' 
+        name='password'
+        value=params[:password]}
+
+    .form-group
+      label for='password_confirmation' Password Confirmation
+      input#password_confirmation.form-control{
+        type='password' 
+        name='password_confirmation'
+        value=params[:password_confirmation]}
+
+    .button-wrapper
+      button.btn.btn-success.btn-lg type='submit' Register
