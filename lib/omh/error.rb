@@ -1,6 +1,6 @@
 module Omh
   module Error
-    class LogInRequiredError < StandardError; end
+    class AuthorizationRequiredError < StandardError; end
 
     class OmhApiError < StandardError
       attr_accessor :status
@@ -12,5 +12,7 @@ module Omh
     end
 
     class AuthorizationError < OmhApiError; end
+    class DataPointDuplicateError < OmhApiError; end
+    class DataPointNotFoundError < OmhApiError; end
   end
 end
