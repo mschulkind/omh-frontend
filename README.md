@@ -1,4 +1,4 @@
-== README
+# README
 
 1. Install ruby 2.2+. You may want to use [RVM](https://rvm.io/) or [rbenv](https://github.com/sstephenson/rbenv).
 2. `gem install bundler`
