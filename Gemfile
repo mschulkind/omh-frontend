@@ -15,9 +15,11 @@ gem 'thin'
 gem 'bootstrap-sass'
 gem 'compass-rails'
 gem 'aes'
+gem 'omniauth-oauth2'
 
 group :development, :test do
   gem 'sqlite3'
+  gem 'binding_of_caller'
   gem 'better_errors'
   gem 'awesome_print'
   gem 'guard-livereload'

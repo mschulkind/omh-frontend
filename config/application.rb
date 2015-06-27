@@ -21,5 +21,10 @@ module OmhFrontend
     # config.i18n.default_locale = :de
 
     config.autoload_paths += %W(#{config.root}/lib)
+
+    require_relative '../lib/omniauth/strategies/omh_oauth2.rb'
+    config.middleware.use OmniAuth::Builder do
+      provider :omh_oauth2, ENV['OMH_CLIENT_ID'], ENV['OMH_CLIENT_SECRET']
+    end
   end
 end

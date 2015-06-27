@@ -1,21 +1,12 @@
-
 module Omh
   class Client
-    DEFAULT_AUTH_BASE_URL='http://localhost:8082/'
-    DEFAULT_RESOURCE_BASE_URL='http://localhost:8083/'
     API_VERSION="1.0.M1"
 
     attr_accessor :access_token
 
     def initialize(options={})
-      @auth_base_url =
-        options[:auth_base_url] || ENV['OMH_AUTH_BASE_URL'] ||
-        DEFAULT_AUTH_BASE_URL
-
-      @resource_base_url =
-        options[:resource_base_url] || ENV['OMH_RESROUCE_BASE_URL'] ||
-        DEFAULT_RESOURCE_BASE_URL
-
+      @auth_base_url = options[:auth_base_url] || Omh.auth_base_url
+      @resource_base_url = options[:resource_base_url] || Omh.resource_base_url
       @client_id = options[:client_id] || ENV['OMH_CLIENT_ID']
       @client_secret = options[:client_secret] || ENV['OMH_CLIENT_SECRET']
       unless @client_id && @client_secret
