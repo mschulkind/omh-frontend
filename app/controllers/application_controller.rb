@@ -7,13 +7,7 @@ class ApplicationController < ActionController::Base
 
   def omh
     options = {}
-    
-    if session[:username] && session[:password]
-      options[:username] = session[:username]
-      options[:password] = 
-        AES.decrypt(session[:password], Rails.configuration.secret_base_key)
-    end
-
+    options[:access_token] = session[:access_token] if session[:access_token]
     @omh ||= Omh::Client.new(options)
   end
 end

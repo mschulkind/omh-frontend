@@ -15,6 +15,8 @@ gem 'thin'
 gem 'bootstrap-sass'
 gem 'compass-rails'
 gem 'omniauth-oauth2'
+gem 'chartkick'
+gem 'hashie'
 
 group :development, :test do
   gem 'sqlite3'

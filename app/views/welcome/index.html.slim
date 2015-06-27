@@ -5,7 +5,31 @@
        div{class=name}
          = msg.html_safe
 
-.row
+- if session[:access_token]
+  - if params[:schema_name]
+    .row.top-level
+      = line_chart(@chart_data, library: {legend: {position: 'bottom'}}, 
+        min: nil, max: nil)
+  - else
+    h2 Choose a schema name below to see a chart.
+
+  .row.top-level.schema-name
+    .col-md-4
+      a.btn.btn-success.btn-md {href='?schema_name=body-weight'} body-weight
+    .col-md-4
+      a.btn.btn-success.btn-md {href='?schema_name=blood-pressure'} 
+        | blood-pressure
+    .col-md-4
+      Custom
+      = form_tag '', role: 'form', method: :get
+        label for='schema-name' Schema Name
+        .row
+          .col-md-9
+            input#schema-name.form-control{type='text', name='schema_name'}
+          .col-md-2
+            button.btn.btn-success.btn-md type='submit' Show
+
+.row.top-level
   .col-md-6
     = form_tag users_path, 
       method: 'post', 
@@ -40,8 +64,10 @@
 
   .col-md-6
     - if session[:access_token]
+      div Logged in as '#{session[:username]}'.
+
       = link_to("Log Out", user_log_out_path, 
-        class: "button btn btn-success btn-lg", method: :post)
+        class: "button btn btn-danger btn-lg log-out", method: :post)
     - else
       = form_tag user_log_in_path, 
         method: 'post', 

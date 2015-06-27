@@ -76,7 +76,7 @@ module Omh
       else handle_error(response)
       end
 
-      response.body
+      Hashie::Mash.new(response.body)
     end
 
     def get_data_points(options)
@@ -87,7 +87,7 @@ module Omh
       else handle_error(response)
       end
 
-      response.body
+      response.body.map {|d| Hashie::Mash.new(d)}
     end
 
     def delete_data_point(id)

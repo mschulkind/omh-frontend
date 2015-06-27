@@ -33,6 +33,7 @@ class UsersController < ApplicationController
       begin
         response = omh.log_in(params[:username], params[:password])
         session[:access_token] = response['access_token']
+        session[:username] = params[:username]
         flash[:notice] = "Successfully logged in."
       rescue Omh::Error::AuthorizationError => e
         @errors << "Invalid username or password."
@@ -44,6 +45,7 @@ class UsersController < ApplicationController
 
   def log_out
     session[:access_token] = nil
+    session[:username] = nil
     flash[:notice] = "Logged out."
     redirect_to '/'
   end
