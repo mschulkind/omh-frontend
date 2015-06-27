@@ -12,6 +12,7 @@ module Omh
     end
 
     class AuthorizationError < OmhApiError; end
+    class UserDuplicateError < OmhApiError; end
     class DataPointDuplicateError < OmhApiError; end
     class DataPointNotFoundError < OmhApiError; end
   end

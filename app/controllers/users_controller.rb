@@ -1,13 +1,10 @@
 class UsersController < ApplicationController
-  def create 
-    @errors = []
+  before_action :init_errors
+  after_action :collect_errors
 
-    unless params[:username].present?
-      @errors << "Username must not be blank."
-    end
-    unless params[:password].present?
-      @errors << "Password must not be blank."
-    end
+  def create
+    require_username_and_password
+
     unless params[:password_confirmation].present?
       @errors << "Password confirmation must not be blank."
     end
@@ -15,27 +12,58 @@ class UsersController < ApplicationController
       @errors << "Password and confirmation did not match."
     end
 
-    if @errors.empty?
+    unless @errors.present?
       begin
         omh.create_user(params[:username], params[:password])
+        flash[:notice] = "User successfully registered."
+      rescue Omh::Error::UserDuplicateError => e
+        @errors << "Duplicate user."
       rescue Omh::Error::OmhApiError => e
-        @errors << "Server error: #{e}"
+        @errors << "Server error (#{e.status}): #{e}."
       end
     end
 
-    if @errors.empty?
-      save_login_info
-      redirect_to '/'
-    else
-      render :new
+    redirect_to '/'
+  end
+
+  def log_in
+    require_username_and_password
+
+    unless @errors.present?
+      begin
+        response = omh.log_in(params[:username], params[:password])
+        session[:access_token] = response['access_token']
+        flash[:notice] = "Successfully logged in."
+      rescue Omh::Error::AuthorizationError => e
+        @errors << "Invalid username or password."
+      end
     end
+
+    redirect_to '/'
+  end
+
+  def log_out
+    session[:access_token] = nil
+    flash[:notice] = "Logged out."
+    redirect_to '/'
   end
 
  private
 
-  def save_login_info
-    session[:username] = params[:username]
-    session[:password] = 
-      AES.encrypt(params[:password], Rails.configuration.secret_key_base)
+  def init_errors
+    @errors = []
+  end
+
+  def collect_errors
+    flash[:alert] = @errors.join('<br>') unless @errors.empty?
+  end
+
+  def require_username_and_password
+    unless params[:username].present?
+      @errors << "Username must not be blank."
+    end
+    unless params[:password].present?
+      @errors << "Password must not be blank."
+    end
   end
 end

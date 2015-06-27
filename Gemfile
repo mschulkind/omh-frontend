@@ -14,7 +14,6 @@ gem 'slim'
 gem 'thin'
 gem 'bootstrap-sass'
 gem 'compass-rails'
-gem 'aes'
 gem 'omniauth-oauth2'
 
 group :development, :test do

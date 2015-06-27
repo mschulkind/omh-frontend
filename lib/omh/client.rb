@@ -15,7 +15,23 @@ module Omh
 
       if options[:username] && options[:password]
         log_in(options[:username], options[:password])
+      else
+        @access_token = options[:access_token]
       end
+    end
+
+    def create_user(username, password)
+      response = auth {|f| f.request(:json)}.post(
+        'users', username: username, password: password)
+
+      case response.status
+      when 201
+      when 409
+        raise Omh::Error::UserDuplicateError.new(response.body, response.status)
+      else handle_error(response)
+      end
+
+      response.body
     end
 
     def log_in(username, password)
@@ -101,23 +117,25 @@ module Omh
     def faraday(&block)
       Faraday.new do |f|
         block.(f) if block_given?
-        f.adapter Faraday.default_adapter
         f.response :json
+        f.adapter Faraday.default_adapter
       end
     end
 
-    def auth
+    def auth(&block)
       faraday do |f|
+        block.(f) if block_given?
         f.request :url_encoded
         f.url_prefix = @auth_base_url
         f.basic_auth(@client_id, @client_secret)
       end
     end
 
-    def resource
-      raise Omh::Error::AuthorizationError unless @access_token
+    def resource(&block)
+      raise Omh::Error::AuthorizationRequiredError unless @access_token
 
       faraday do |f|
+        block.(f) if block_given?
         f.request :json
         f.authorization(:Bearer, @access_token)
         f.url_prefix = @resource_base_url + "/v#{API_VERSION}"
